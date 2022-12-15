@@ -1126,7 +1126,7 @@ MonoBehaviour:
   m_Script: {fileID: -289456416, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Settings: "{ \t \t \t\"TimeLimit\": 10, \t\"_stageCount\": 10 }"
+  Settings: "{ \t \t \t\"TimeLimit\": 5, \t\"_stageCount\": 10 }"
   SettingsPath: 
 --- !u!114 &114771026051107226
 MonoBehaviour:
