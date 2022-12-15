@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using KModkit;
+using Newtonsoft.Json;
 using Rnd = UnityEngine.Random;
 
 
@@ -9,10 +10,18 @@ using Rnd = UnityEngine.Random;
 public class colorPong_Script : MonoBehaviour
 {
 
+    public class ModSettingsJSON
+    {
+        public float TimeLimit;
+        public int _stageCount;
+    }
+
+
     public KMBombInfo Bomb;
     public KMAudio Audio;
     public KMBombModule Module;
     public KMColorblindMode Colorblind;
+    public KMModSettings modSettings;
 
     public KMSelectable[] Buttons;
     public TextMesh Display;
@@ -20,12 +29,52 @@ public class colorPong_Script : MonoBehaviour
     public MeshRenderer Ball;
 
     private float _time;
+    private int _stageCount;
     private bool _isRunning;
-    private int _stageCount = 10;
     private bool _hasPressed;
     private bool _lastPressRight, _currentPressRight, _initialPressRight;
     private int _initialColor;
-
+    float TimeLimit()
+    {
+        try
+        {
+            ModSettingsJSON settings = JsonConvert.DeserializeObject<ModSettingsJSON>(modSettings.Settings);
+            if (settings != null)
+            {
+                if (settings.TimeLimit < 1)
+                    return 1;
+                else if (settings.TimeLimit > 60)
+                    return 60;
+                else return settings.TimeLimit;
+            }
+            else return 5;
+        }
+        catch (JsonReaderException e)
+        {
+            Debug.LogFormat("[color pong #{0}] JSON reading failed with error time, using default threshold.", _moduleID);
+            return 5;
+        }
+    }
+    int _initialStageCount()
+    {
+        try
+        {
+            ModSettingsJSON settings = JsonConvert.DeserializeObject<ModSettingsJSON>(modSettings.Settings);
+            if (settings != null)
+            {
+                if (settings._stageCount < 1)
+                    return 1;
+                
+                else return settings._stageCount;
+            }
+            else return 10;
+        }
+        catch (JsonReaderException e)
+        {
+            Debug.LogFormat("[color pong #{0}] JSON reading failed with error time, using default threshold.", _moduleID);
+            return 10;
+        }
+    }
     bool TwitchPlaysActive;
     private bool _colorblindActive;
 
@@ -62,7 +111,6 @@ public class colorPong_Script : MonoBehaviour
             "I",
             "X"
         };
-    private static readonly float TimeLimit = 5;
 
     private bool _overshoot, _leftHanded;
 
@@ -177,6 +225,7 @@ public class colorPong_Script : MonoBehaviour
     private IEnumerator PlaySet() // game loop
     {
         int previousColor = _initialColor;
+        _stageCount = _initialStageCount();
 
         _isRunning = true;
         do
@@ -187,7 +236,7 @@ public class colorPong_Script : MonoBehaviour
             Log("The next color is {0}.", ColorNames[currentColor]);
 
             _hasPressed = false;
-            _time = TimeLimit + (TwitchPlaysActive ? 10 : 0); // set time to the time limit and if TwitchPlays is active add 10 to it
+            _time = TimeLimit() + (TwitchPlaysActive ? 10 : 0); // set time to the time limit and if TwitchPlays is active add 10 to it
             while (_time > 0 && !_hasPressed) // while the module is not pressed the time will decrese by 1 sec etch sec 
             {
                 SetDisplay(_time);
