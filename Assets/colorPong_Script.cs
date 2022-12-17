@@ -77,7 +77,7 @@ public class colorPong_Script : MonoBehaviour
     }
     bool TwitchPlaysActive;
     private bool _colorblindActive;
-
+    
     private static readonly Color[] Colors =
         {
             new Color(1,0,0), //red
@@ -113,11 +113,11 @@ public class colorPong_Script : MonoBehaviour
         };
 
     private bool _overshoot, _leftHanded;
-
+    
     private bool _solved = false;
     static int _moduleIdCounter = 1;
     int _moduleID = 0;
-
+    
     void Awake()
     {
         _moduleID = _moduleIdCounter++;
@@ -137,6 +137,7 @@ public class colorPong_Script : MonoBehaviour
     {
         _colorblindActive = Colorblind.ColorblindModeActive;
         GetEdgework();
+        _stageCount = _initialStageCount();
         Initialize();
 
     }
@@ -155,6 +156,8 @@ public class colorPong_Script : MonoBehaviour
         SetColorblindColor(_initialColor);
         Display.text = "--.--";
         Log("The initial color for the next set is {0}.", ColorNames[_initialColor]);
+        Log("initial stage Count is {0}and curent stage in {1}.", _initialStageCount(), _stageCount );
+        
     }
 
     private void GetEdgework()
@@ -225,7 +228,7 @@ public class colorPong_Script : MonoBehaviour
     private IEnumerator PlaySet() // game loop
     {
         int previousColor = _initialColor;
-        _stageCount = _initialStageCount();
+        
 
         _isRunning = true;
         do
