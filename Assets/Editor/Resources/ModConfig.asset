@@ -14,7 +14,7 @@ MonoBehaviour:
   id: colorPong
   title: Color Pong
   author: MAXANGE2B
-  description: 
-  version: BETA 0.5
+  description: "my first module\n\nthanks Obvious\r#5283 for assisting with development"
+  version: 1.0
   outputFolder: build
   previewImage: {fileID: 2800000, guid: 344e14b7d875aee4bab91b8d3cdaffe8, type: 3}
